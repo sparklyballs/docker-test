@@ -7,7 +7,7 @@ The [LinuxServer.io](https://linuxserver.io) team brings you another container r
 
 # linuxserver/oscam
 
-[Oscam] (http://www.streamboard.tv/oscam/) an Open Source Conditional Access Module software used for descrambling DVB transmissions using smart cards. It's both a server and a client.
+[Oscam] (http://www.streamboard.tv/oscam/) is an Open Source Conditional Access Module software used for descrambling DVB transmissions using smart cards. It's both a server and a client.
 
 
 ## Usage
