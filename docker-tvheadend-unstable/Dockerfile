@@ -126,8 +126,8 @@ make install && \
  cd tvheadend && \
  git checkout  "$TVH_VER" && \
  ./configure --prefix=/usr \
-#			--mandir=/usr/share/man \
-#			--infodir=/usr/share/info \
+			--mandir=/usr/share/man \
+			--infodir=/usr/share/info \
 			--localstatedir=/var \
 			--enable-libav \
 			--sysconfdir=/config \
@@ -158,6 +158,7 @@ make install && \
 
 # Add runtime dependencies for tvheadend
 apk add --no-cache \
+		ffmpeg \
 		ffmpeg-libs \
 		libhdhomerun-libs && \
 
