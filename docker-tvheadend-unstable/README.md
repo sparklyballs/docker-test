@@ -21,8 +21,10 @@ docker create \
   -e PGID=<gid> -e PUID=<uid>  \
   -p 9981:9981 \
   -p 9982:9982 \
+  --device=/dev/dvb
   linuxserver/tvheadend-unstable
 ```
+The --device=/dev/dvb is only needed if you want to pass through a DVB card to the container. If you use IPTV or HDHomeRun you can leave it out.
 
 **Parameters**
 
