@@ -43,6 +43,7 @@ In this instance `PUID=1001` and `PGID=1001`. To find yours use `id user` as bel
 
 ## Setting up the application
 
+To set up oscam there are numerous guides on the internet. There are too many scenarios to make a quick guide.
 
 ## Info
 
