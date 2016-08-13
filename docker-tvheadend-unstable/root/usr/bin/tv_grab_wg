@@ -1,5 +1,5 @@
 #!/bin/bash
-xmltv_file_location=/data/guide.xml
+xmltv_file_location=/config/data/*.xml
 dflag=
 vflag=
 cflag=
@@ -45,7 +45,7 @@ done
 
 if [ "$dflag" ]
 then
-   printf "$0 is a wrapper grabber around WebGrab+Plus\n"
+   printf "WebGrab+Plus xml file grabber\n"
 fi
 if [ "$vflag" ]
 then
