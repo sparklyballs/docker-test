@@ -1,6 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-#!/bin/bash
 echo "Running startup script...."
 
 #Add default recording path if no config exists
