@@ -3,33 +3,6 @@
 #!/bin/bash
 echo "Running startup script...."
 
-
-#Check if nonexistent folder exists and create if needed
-#if [ ! -d /nonexistent ]; then
-#	echo "Creating directory /nonexistent."
-#	mkdir -p /nonexistent/
-#else 
-#	echo "The directory /nonexisten already exist."
-#fi
-
-
-#Check if xmltv folder exists
-#if [ ! -d /config/.xmltv ]; then
-#	echo "Creating directory /config/.xmltv."
-#	mkdir -p /config/.xmltv
-#	ln -s  /config/.xmltv /nonexistent/
-#else 
-#	echo "The directory /config/.xmltv already exist."
-#fi
-
-#Check if link exists
-#if [ ! -h /config/.xmltv ]; then
-#	echo "Creating symlink to directory /nonexistent."
-#	ln -s  /config/.xmltv /nonexistent/
-#else
-#	echo "Symlink to /nonexistent already exist."
-#fi
-
 #Add default recording path if no config exists
 if [ ! -d /config/.hts/dvr/config ]; then
 	echo "Creating default DVR config..."
@@ -50,10 +23,3 @@ if [ ! -f /config/comskip/comskip.ini ]; then
 else
 	echo "/etc/comskip.ini already exists."
 fi
-
-#echo "Changing owner and permissions for /config/"
-#chown -R abc:abc /config/
-#chmod -R g+rw /config/
-
-
- 
