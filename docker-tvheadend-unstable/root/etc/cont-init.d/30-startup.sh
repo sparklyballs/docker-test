@@ -19,7 +19,6 @@ if [ ! -f /config/comskip/comskip.ini ]; then
 	mkdir -p /config/comskip
 	cp /defaults/comskip.ini.org /config/comskip/comskip.ini
 	chown -R abc:abc /config/comskip
-	
 else
 	echo "/etc/comskip.ini already exists."
 fi
