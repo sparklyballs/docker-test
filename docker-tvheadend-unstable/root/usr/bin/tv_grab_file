@@ -4,7 +4,7 @@ vflag=
 cflag=
 if (( $# < 1 ))
 then
-  cat /data/guide.xml
+  cat /config/data/*.xml
   exit 0
 fi
 
@@ -40,7 +40,7 @@ done
 
 if [ "$dflag" ]
 then
-   printf "A simple grabber that just reads the ~/.xmltv/tv_grab_file.xmltv file\n"
+   printf "XML file grabber\n"
 fi
 if [ "$vflag" ]
 then
