@@ -45,7 +45,7 @@ done
 
 if [ "$dflag" ]
 then
-   printf "WebGrab+Plus xml file grabber\n"
+   printf "WebGrab+Plus XML file grabber\n"
 fi
 if [ "$vflag" ]
 then
