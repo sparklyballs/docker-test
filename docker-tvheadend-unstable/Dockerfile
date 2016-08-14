@@ -1,174 +1,175 @@
 FROM lsiobase/alpine
 MAINTAINER saarg
 
-# Environment settings
-ARG BUILD_DIR="/tmp/"
-ARG TVH_SRC="/tmp/tvheadend"
-ARG DVBAPPS="/tmp/dvb-apps"
-ARG XMLTV="/tmp/xmltv-0.5.67"
+# package version
 ARG TVH_VER="e3e8a797"
+ARG UNICODE_VER="2.09"
+ARG XMLTV_VER="0.5.67"
+
+# Environment settings
 ENV HOME="/config"
 
-# Copy local files
-COPY root/ /
+# copy patches
+COPY patches/ /tmp/patches/
 
-# Install build dependencies for tvheadend
+# install build packages
 RUN \
  apk add --no-cache --virtual=build-dependencies \
-		build-base pkgconf openssl-dev \
-		git wget cmake \
-		zlib-dev \
-		uriparser-dev gettext-dev \
-		libhdhomerun-dev \
-		findutils coreutils ffmpeg-dev \
+	build-base \
+	cmake \
+	coreutils \
+	ffmpeg-dev \
+	findutils \
+	gettext-dev \
+	git \
+	libhdhomerun-dev \
+	libxml2-dev \
+	mercurial \
+	openssl-dev \
+	patch \
+	perl-dev \
+	pkgconf \
+	uriparser-dev \
+	wget \
+	zlib-dev && \
 
-# PERL modules build dependencies
-		perl-dev \
-		libxml2-dev \
-		patch \
-		
-# DVB-apps build dependencies
-		mercurial && \
-		
-# Add runtime dependencies required in build stage
+# add runtime dependencies required in build stage
  apk add --no-cache \
-		libcurl	\
-		libssl1.0 \
-		libcrypto1.0 \
-		python \
-		zlib \
-		linux-headers \
-		bsd-compat-headers \
-		uriparser \
-		bzip2 \
+	bsd-compat-headers \
+	bzip2 \
+	curl \
+	gzip \
+	libcrypto1.0 \
+	libcurl	\
+	libssl1.0 \
+	linux-headers \
+	openssl \
+	perl \
+	perl-archive-zip \
+	perl-boolean \
+	perl-capture-tiny \
+	perl-cgi \
+	perl-compress-raw-zlib \
+	perl-date-manip \
+	perl-datetime \
+	perl-file-slurp \
+	perl-html-parser \
+	perl-html-tree \
+	perl-http-cookies \
+	perl-io \
+	perl-io-compress \
+	perl-io-html \
+	perl-io-stringy \
+	perl-json \
+	perl-libwww \
+	perl-module-build \
+	perl-module-pluggable \
+	perl-net-ssleay \
+	perl-parse-recdescent \
+	perl-path-class \
+	perl-term-readkey \
+	perl-test-exception \
+	perl-test-requires \
+	perl-xml-parser \
+	perl-xml-sax \
+	python \
+	tar \
+	uriparser \
+	wget \
+	zlib && \
 
-# Perl runtime dependencies required in build stage
-		perl \
-		perl-module-build \
-		perl-path-class \
-		perl-html-parser \
-		perl-net-ssleay \
-		perl-xml-parser \
-		perl-xml-sax \
-		perl-term-readkey \
-		perl-libwww \
-		perl-date-manip \
-		perl-term-readkey \
-		perl-file-slurp \
-		perl-compress-raw-zlib \
-		perl-io-compress \
-		perl-archive-zip \
-		perl-cgi \
-		perl-datetime \
-		perl-io-html \
-		perl-html-parser \
-		perl-html-tree \
-		perl-http-cookies \
-		perl-io \
-		perl-io-stringy \
-		perl-json \
-		perl-parse-recdescent \
-		perl-capture-tiny \
-		perl-test-exception \
-		perl-boolean \
-		perl-test-requires \
-		perl-module-pluggable \
-		gzip \
-		openssl \
-		curl \
-		wget && \ 
-
-# Install runtime PERL modules needed for XMLTV build stage
-curl -L http://cpanmin.us | perl - App::cpanminus && \
- cpanm IO::Socket::SSL && \ 
- cpanm XML::Writer && \ 
+# install perl modules
+ curl -L http://cpanmin.us | perl - App::cpanminus && \
  cpanm HTML::TableExtract && \
  cpanm HTTP::Cache::Transparent && \
- cpanm SOAP::Lite && \
+ cpanm inc && \
  cpanm IO::Scalar && \
+ cpanm IO::Socket::SSL && \
+ cpanm Lingua::EN::Numbers::Ordinate && \
+ cpanm Lingua::Preferred && \
+ cpanm PerlIO::gzip && \
+ cpanm SOAP::Lite && \
+ cpanm Term::ProgressBar && \
+ cpanm Term::ProgressBar && \
+ cpanm Unicode::UTF8simple && \
+ cpanm version && \
  cpanm WWW::Mechanize && \
  cpanm XML::LibXML && \
- cpanm Unicode::UTF8simple && \
- cpanm Term::ProgressBar && \
- cpanm PerlIO::gzip && \
- cpanm Lingua::Preferred && \
- cpanm Lingua::EN::Numbers::Ordinate && \
- cpanm XML::Twig && \
  cpanm XML::TreePP && \
- cpanm Term::ProgressBar && \
- cpanm inc && \
- cpanm version && \
-	
+ cpanm XML::Twig && \
+ cpanm XML::Writer && \
 
-# Build and patch perl-unicode-string
-cd "$BUILD_DIR" && \
-wget http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/Unicode-String-2.09.tar.gz && \
-tar xvzf Unicode-String-2.09.tar.gz && \
-cd Unicode-String-2.09/lib/Unicode && \
-patch -i /tmp/perl-unicode.patch && \
-cd "$BUILD_DIR"\Unicode-String-2.09 && \
-perl Makefile.PL && \
-make && \
-make test && \
-make install && \
+# patch and build perl-unicode-string
+ mkdir -p \
+	/tmp/unicode && \
+ curl -o \
+ /tmp/unicode-src.tar.gz -L \
+	"http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/Unicode-String-${UNICODE_VER}.tar.gz" && \
+ tar xzf /tmp/unicode-src.tar.gz -C \
+	/tmp/unicode --strip-components=1 && \
+ cd /tmp/unicode/lib/Unicode && \
+ patch -i /tmp/patches/perl-unicode.patch && \
+ cd /tmp/unicode && \
+ perl Makefile.PL && \
+ make && \
+ make test && \
+ make install && \
 
-# Build DVB-apps
- cd "$BUILD_DIR" && \
- hg clone http://linuxtv.org/hg/dvb-apps && \
- cd dvb-apps && \
+# build dvb-apps
+ hg clone http://linuxtv.org/hg/dvb-apps /tmp/dvb-apps && \
+ cd /tmp/dvb-apps && \
  make && \
  make install && \
 
- 
-# Build tvheadend
- cd "$BUILD_DIR" && \
- git clone https://github.com/tvheadend/tvheadend.git && \
- cd tvheadend && \
- git checkout  "$TVH_VER" && \
- ./configure --prefix=/usr \
-			--mandir=/usr/share/man \
-			--infodir=/usr/share/info \
-			--localstatedir=/var \
-			--enable-libav \
-			--sysconfdir=/config \
-			--enable-hdhomerun_client \
-			--disable-hdhomerun_static \
-			--disable-ffmpeg_static \
-			--disable-libx264_static \
-			--disable-libx265_static \
-			--disable-libvpx_static \
-			--disable-libtheora_static \
-			--disable-libvorbis_static \
-			--disable-libfdkaac_static \
-			--disable-libmfx_static && \
-make && \
-make install && \
- 
-# Build XMLTV 
-cd "$BUILD_DIR" && \
-wget http://kent.dl.sourceforge.net/project/xmltv/xmltv/0.5.67/xmltv-0.5.67.tar.bz2 && \
-tar xf xmltv-0.5.67.tar.bz2 && \
-cd "$XMLTV" && \
-/bin/echo -e "yes" | perl Makefile.PL PREFIX=/usr/ INSTALLDIRS=vendor && \
-make && \
-make test && \
-make install && \
+# build tvheadend
+ git clone https://github.com/tvheadend/tvheadend.git /tmp/tvheadend && \
+ cd /tmp/tvheadend && \
+ git checkout "${TVH_VER}" && \
+ ./configure \
+	--disable-ffmpeg_static \
+	--disable-hdhomerun_static \
+	--disable-libfdkaac_static \
+	--disable-libmfx_static \
+	--disable-libtheora_static \
+	--disable-libvorbis_static \
+	--disable-libvpx_static \
+	--disable-libx264_static \
+	--disable-libx265_static \
+	--enable-hdhomerun_client \
+	--enable-libav \
+	--infodir=/usr/share/info \
+	--localstatedir=/var \
+	--mandir=/usr/share/man \
+	--prefix=/usr \
+	--sysconfdir=/config && \
+ make && \
+ make install && \
 
+# build XMLTV
+ curl -o /tmp/xmtltv-src.tar.bz2 -L \
+	"http://kent.dl.sourceforge.net/project/xmltv/xmltv/${XMLTV_VER}/xmltv-${XMLTV_VER}.tar.bz2" && \
+ tar xf /tmp/xmtltv-src.tar.bz2 -C \
+	/tmp --strip-components=1 && \
+ cd "/tmp/xmltv-${XMLTV_VER}" && \
+ /bin/echo -e "yes" | perl Makefile.PL PREFIX=/usr/ INSTALLDIRS=vendor && \
+ make && \
+ make test && \
+ make install && \
 
+# install runtime packages
+ apk add --no-cache \
+	ffmpeg \
+	ffmpeg-libs \
+	libhdhomerun-libs && \
 
-# Add runtime dependencies for tvheadend
-apk add --no-cache \
-		ffmpeg \
-		ffmpeg-libs \
-		libhdhomerun-libs && \
-
-# Uninstall build dependencies		
-apk del --purge \
+# cleanup
+ apk del --purge \
 	build-dependencies && \
-
-# Clean up
  rm -rf \
-	/var/cache/apk/* /tmp/*
+	/tmp/*
 
-# Ports and volumes
+# copy local files
+COPY root/ /
+
+# ports and volumes
 EXPOSE 9981 9982
