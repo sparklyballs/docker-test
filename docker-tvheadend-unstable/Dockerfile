@@ -2,6 +2,7 @@ FROM lsiobase/alpine
 MAINTAINER saarg
 
 # package version
+ARG ARGTABLE_VER="2.13"
 ARG TVH_VER="e3e8a797"
 ARG UNICODE_VER="2.09"
 ARG XMLTV_VER="0.5.67"
@@ -15,20 +16,26 @@ COPY patches/ /tmp/patches/
 # install build packages
 RUN \
  apk add --no-cache --virtual=build-dependencies \
-	build-base \
+	autoconf \
+	automake \
 	cmake \
 	coreutils \
 	ffmpeg-dev \
 	findutils \
+	g++ \
+	gcc \
 	gettext-dev \
 	git \
 	libhdhomerun-dev \
+	libtool \
 	libxml2-dev \
+	make \
 	mercurial \
 	openssl-dev \
 	patch \
 	perl-dev \
 	pkgconf \
+	sdl-dev \
 	uriparser-dev \
 	wget \
 	zlib-dev && \
@@ -154,6 +161,32 @@ RUN \
  /bin/echo -e "yes" | perl Makefile.PL PREFIX=/usr/ INSTALLDIRS=vendor && \
  make && \
  make test && \
+ make install && \
+
+# build argtable2
+ ARGTABLE_VER1="${ARGTABLE_VER//./-}" && \
+ mkdir -p \
+	/tmp/argtable && \
+ curl -o \
+ /tmp/argtable-src.tar.gz -L \
+	"https://sourceforge.net/projects/argtable/files/argtable/argtable-${ARGTABLE_VER}/argtable${ARGTABLE_VER1}.tar.gz" && \
+ tar xf /tmp/argtable-src.tar.gz -C \
+	/tmp/argtable --strip-components=1 && \
+ cd /tmp/argtable && \
+ ./configure \
+	--prefix=/usr && \
+ make && \
+ make check && \
+ make install && \
+
+# build comskip
+ git clone git://github.com/erikkaashoek/Comskip /tmp/comskip && \
+ cd /tmp/comskip && \
+ ./autogen.sh && \
+ ./configure \
+	--bindir=/usr/bin \
+	--sysconfdir=/config && \
+ make && \
  make install && \
 
 # install runtime packages
