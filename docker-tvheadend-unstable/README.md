@@ -33,7 +33,7 @@ The --device=/dev/dvb is only needed if you want to pass through a DVB card to t
 * `-e PGID` for GroupID - see below for explanation
 * `-e PUID` for UserID - see below for explanation
 
-It is based on alpine linux with s6 overlay, for shell access whilst the container is running do `docker exec -it <container-name> /bin/bash`.
+It is based on alpine linux with s6 overlay, for shell access whilst the container is running do `docker exec -it tvheadend-unstable /bin/bash`.
 
 ### User / Group Identifiers
 
@@ -87,10 +87,11 @@ If you have EPG data in XML format from a supplier, you can drop it in the data 
 If you use WebGrab+Plus, choose the WebGrab+Plus XML file grabber. The XML file goes in the same path as above.
 
 For advanced setup of tvheadend, go to [tvheadend.org] (https://www.tvheadend.org)
+
 ## Info
 
-* Shell access whilst the container is running: `docker exec -it container-name /bin/bash`
-* To monitor the logs of the container in realtime: `docker logs -f container-name`
+* Shell access whilst the container is running: `docker exec -it tvheadend-unstable /bin/bash`
+* To monitor the logs of the container in realtime: `docker logs -f tvheadend-unstable`
 
 ## Versions
 
