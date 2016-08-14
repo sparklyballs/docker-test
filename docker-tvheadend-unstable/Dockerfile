@@ -199,6 +199,7 @@ RUN \
  apk del --purge \
 	build-dependencies && \
  rm -rf \
+	/config/.cpanm \
 	/tmp/*
 
 # copy local files
